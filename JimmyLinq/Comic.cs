@@ -4,7 +4,7 @@ using System.Text;
 
 namespace JimmyLinq
 {
-    class Comic
+    public class Comic
     {
         public static readonly IEnumerable<Review> Reviews = new[]
         {

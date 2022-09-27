@@ -5,20 +5,20 @@ using System.Linq;
 
 namespace JimmyLinq
 {
-    static class ComicAnalyser
+    public static class ComicAnalyser
     {
-        private static PriceRange CalculatePriceRange(Comic comic)
+        private static PriceRange CalculatePriceRange(Comic comic, IReadOnlyDictionary<int, decimal> prices)
         {
-            if (Comic.Prices[comic.Issue] < 100) return PriceRange.Cheap;
+            if (prices[comic.Issue] < 100) return PriceRange.Cheap;
             else return PriceRange.Expensive;
         }
 
         public static IEnumerable<IGrouping<PriceRange, Comic>> GroupComicsByPrice(IEnumerable<Comic> comics, IReadOnlyDictionary<int, decimal> prices)
         {
-            IEnumerable<IGrouping<PriceRange, Comic>> grouped =
+            var grouped =
                 from comic in comics
                 orderby prices[comic.Issue]
-                group comic by CalculatePriceRange(comic) into priceGroup
+                group comic by CalculatePriceRange(comic, prices) into priceGroup
                 select priceGroup;
 
             return grouped;
@@ -32,7 +32,7 @@ namespace JimmyLinq
                 join review in reviews
                 on comic.Issue equals review.Issue
                 select $"{review.Critic} rated #{comic.Issue} '{comic.Name}' {review.Score:0.00}";
-
+                
             return joined;
         }
     }
